@@ -1,4 +1,0 @@
-{
-  "GRAPHQL_QUERY_URL": "http://192.168.10.45:4000/graphql",
-  "GRAPHQL_SUBSCRIPTION_URL": "ws://192.168.10.45:4000/graphql"
-}

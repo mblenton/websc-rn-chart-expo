@@ -1,10 +1,10 @@
 import React from 'react';
 import { G, Line, Text } from 'react-native-svg';
-import * as d3 from 'd3-scale';
+import * as d3Scale from 'd3-scale';
 
 interface IDrawYaxis {
   height: number;
-  yScale: d3.ScaleLinear<number, number>;
+  yScale: d3Scale.ScaleLinear<number, number>;
 }
 
 export const DrawYaxis = ({ yScale, height }: IDrawYaxis): JSX.Element => {
