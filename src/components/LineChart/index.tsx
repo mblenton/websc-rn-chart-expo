@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import Svg, { G } from 'react-native-svg';
 import { DrawXaxis } from './DrawXaxis';
@@ -6,11 +6,8 @@ import { DrawYaxis } from './DrawYaxis';
 import { DrawLine } from './DrawLine';
 import { getXYscale } from './getXYscale';
 import { generateLinePath } from './generateLinePath';
-import { Cursor } from './Cursor';
-import { CursorValue } from './CursorValue';
-import { useRelay } from './useRelay';
 
-// import data from './data.json';
+import data from './data.json';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const width = screenWidth * 0.98 - 4;
@@ -37,13 +34,7 @@ const styles = StyleSheet.create({
 });
 
 export const LineChart = (): JSX.Element => {
-  const [currentCursorValue, setCurrentCursorValue] = useState({ x: 0, y: 0 });
-
-  const [isCursorActive, setIsCursorActive] = useState(false);
-
-  const { data } = useRelay();
-
-  const { xScale, yScale, minXvalue, maxXvalue } = getXYscale({
+  const { xScale, yScale } = getXYscale({
     data,
     width,
     height,
@@ -57,13 +48,6 @@ export const LineChart = (): JSX.Element => {
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.cursorValuesContainer}>
-        <CursorValue
-          x={currentCursorValue.x}
-          y={currentCursorValue.y}
-          isCursorActive={isCursorActive}
-        />
-      </View>
       <View style={styles.chartContainer}>
         <Svg style={StyleSheet.absoluteFill}>
           <G fill="none">
@@ -76,15 +60,6 @@ export const LineChart = (): JSX.Element => {
             width={width}
           />
         </Svg>
-        <Cursor
-          minXvalue={Number(minXvalue)}
-          maxXvalue={Number(maxXvalue)}
-          linePath={linePath as string}
-          xScale={xScale}
-          yScale={yScale}
-          setCurrentCursorValue={setCurrentCursorValue}
-          setIsCursorActive={setIsCursorActive}
-        />
       </View>
     </View>
   );
