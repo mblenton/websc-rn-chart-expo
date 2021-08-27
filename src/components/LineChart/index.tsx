@@ -8,9 +8,8 @@ import { getXYscale } from './getXYscale';
 import { generateLinePath } from './generateLinePath';
 import { Cursor } from './Cursor';
 import { CursorValue } from './CursorValue';
-import { useRelay } from './useRelay';
 
-// import data from './data.json';
+import data from './data.json';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const width = screenWidth * 0.98 - 4;
@@ -40,8 +39,6 @@ export const LineChart = (): JSX.Element => {
   const [currentCursorValue, setCurrentCursorValue] = useState({ x: 0, y: 0 });
 
   const [isCursorActive, setIsCursorActive] = useState(false);
-
-  const { data } = useRelay();
 
   const { xScale, yScale, minXvalue, maxXvalue } = getXYscale({
     data,
