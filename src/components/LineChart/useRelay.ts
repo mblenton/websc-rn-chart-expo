@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { graphql, useLazyLoadQuery, useSubscription } from 'react-relay';
-import { LineChartQuery } from './__generated__/LineChartQuery.graphql';
+import { useRelayQuery } from './__generated__/useRelayQuery.graphql';
 
 interface IUseRelayR {
   data: readonly {
@@ -11,7 +11,7 @@ interface IUseRelayR {
 
 export const useRelay = (): IUseRelayR => {
   const graphqlQuery = graphql`
-    query LineChartQuery {
+    query useRelayQuery {
       chartData {
         x
         y
@@ -20,7 +20,7 @@ export const useRelay = (): IUseRelayR => {
   `;
 
   const graphqlSubscription = graphql`
-    subscription LineChartSubscription {
+    subscription useRelaySubscription {
       chartData {
         x
         y
@@ -28,7 +28,7 @@ export const useRelay = (): IUseRelayR => {
     }
   `;
 
-  const { chartData: data } = useLazyLoadQuery<LineChartQuery>(
+  const { chartData: data } = useLazyLoadQuery<useRelayQuery>(
     graphqlQuery,
     {}, // for variables - there are no variables in our example
   );

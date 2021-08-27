@@ -3,22 +3,22 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
-export type LineChartQueryVariables = {};
-export type LineChartQueryResponse = {
+export type useRelaySubscriptionVariables = {};
+export type useRelaySubscriptionResponse = {
     readonly chartData: ReadonlyArray<{
         readonly x: number | null;
         readonly y: number | null;
     }>;
 };
-export type LineChartQuery = {
-    readonly response: LineChartQueryResponse;
-    readonly variables: LineChartQueryVariables;
+export type useRelaySubscription = {
+    readonly response: useRelaySubscriptionResponse;
+    readonly variables: useRelaySubscriptionVariables;
 };
 
 
 
 /*
-query LineChartQuery {
+subscription useRelaySubscription {
   chartData {
     x
     y
@@ -47,7 +47,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "LineChartQuery",
+    "name": "useRelaySubscription",
     "selections": [
       {
         "alias": null,
@@ -63,14 +63,14 @@ return {
         "storageKey": null
       }
     ],
-    "type": "Query",
+    "type": "Subscription",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "LineChartQuery",
+    "name": "useRelaySubscription",
     "selections": [
       {
         "alias": null,
@@ -95,14 +95,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5181769d20682c61ab169148ede45332",
+    "cacheID": "db4fb99c5d051d3bfe64a014f75ac1ce",
     "id": null,
     "metadata": {},
-    "name": "LineChartQuery",
-    "operationKind": "query",
-    "text": "query LineChartQuery {\n  chartData {\n    x\n    y\n    id\n  }\n}\n"
+    "name": "useRelaySubscription",
+    "operationKind": "subscription",
+    "text": "subscription useRelaySubscription {\n  chartData {\n    x\n    y\n    id\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'c1db56d02344b437f5d1a5e709d52d2f';
+(node as any).hash = '9d60303ba9288e308a309c9446e0c251';
 export default node;
