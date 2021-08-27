@@ -1,14 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import Svg, { G } from 'react-native-svg';
-import { graphql, useLazyLoadQuery, useSubscription } from 'react-relay';
 import { DrawXaxis } from './DrawXaxis';
 import { DrawYaxis } from './DrawYaxis';
 import { DrawLine } from './DrawLine';
 import { getXYscale } from './getXYscale';
 import { generateLinePath } from './generateLinePath';
 import { Cursor } from './Cursor';
-import { LineChartQuery } from './__generated__/LineChartQuery.graphql';
+import { CursorValue } from './CursorValue';
+import { useRelay } from './useRelay';
 
 // import data from './data.json';
 
@@ -16,41 +16,32 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const width = screenWidth * 0.98 - 4;
 const height = screenHeight * (4 / 17);
 
+const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // borderWidth: 1,
+  },
+  chartContainer: {
+    width,
+    height,
+    // borderWidth: 1,
+  },
+  cursorValuesContainer: {
+    height: 30,
+    width: 140,
+    alignItems: 'center',
+    // borderWidth: 1,
+  },
+});
+
 export const LineChart = (): JSX.Element => {
-  const graphqlQuery = graphql`
-    query LineChartQuery {
-      chartData {
-        x
-        y
-      }
-    }
-  `;
+  const [currentCursorValue, setCurrentCursorValue] = useState({ x: 0, y: 0 });
 
-  const graphqlSubscription = graphql`
-    subscription LineChartSubscription {
-      chartData {
-        x
-        y
-      }
-    }
-  `;
+  const [isCursorActive, setIsCursorActive] = useState(false);
 
-  const { chartData: data } = useLazyLoadQuery<LineChartQuery>(
-    graphqlQuery,
-    {}, // for variables - there are no variables in our example
-  );
-
-  // IMPORTANT: your config should be memoized.
-  // Otherwise, useSubscription will re-render too frequently.
-  const config = useMemo(
-    () => ({
-      variables: {},
-      subscription: graphqlSubscription,
-    }),
-    [graphqlSubscription],
-  );
-
-  useSubscription(config);
+  const { data } = useRelay();
 
   const { xScale, yScale, minXvalue, maxXvalue } = getXYscale({
     data,
@@ -65,28 +56,36 @@ export const LineChart = (): JSX.Element => {
   });
 
   return (
-    <View style={styles.container}>
-      <Svg style={StyleSheet.absoluteFill}>
-        <G fill="none">
-          <DrawXaxis xScale={xScale} height={height} width={width} />
-          <DrawYaxis yScale={yScale} height={height} />
-        </G>
-        <DrawLine linePath={linePath as string} height={height} width={width} />
-      </Svg>
-      <Cursor
-        minXvalue={Number(minXvalue)}
-        maxXvalue={Number(maxXvalue)}
-        linePath={linePath as string}
-        xScale={xScale}
-        yScale={yScale}
-      />
+    <View style={styles.mainContainer}>
+      <View style={styles.cursorValuesContainer}>
+        <CursorValue
+          x={currentCursorValue.x}
+          y={currentCursorValue.y}
+          isCursorActive={isCursorActive}
+        />
+      </View>
+      <View style={styles.chartContainer}>
+        <Svg style={StyleSheet.absoluteFill}>
+          <G fill="none">
+            <DrawXaxis xScale={xScale} height={height} width={width} />
+            <DrawYaxis yScale={yScale} height={height} />
+          </G>
+          <DrawLine
+            linePath={linePath as string}
+            height={height}
+            width={width}
+          />
+        </Svg>
+        <Cursor
+          minXvalue={Number(minXvalue)}
+          maxXvalue={Number(maxXvalue)}
+          linePath={linePath as string}
+          xScale={xScale}
+          yScale={yScale}
+          setCurrentCursorValue={setCurrentCursorValue}
+          setIsCursorActive={setIsCursorActive}
+        />
+      </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width,
-    height,
-  },
-});

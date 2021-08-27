@@ -36,12 +36,23 @@ const styles = StyleSheet.create({
   },
 });
 
+interface IInvertCurrentCursorValue {
+  xValue: number;
+  yValue: number;
+}
 interface CursorProps {
   linePath: string;
   minXvalue: number;
   maxXvalue: number;
   xScale: d3.ScaleLinear<number, number>;
   yScale: d3.ScaleLinear<number, number>;
+  setCurrentCursorValue: React.Dispatch<
+    React.SetStateAction<{
+      x: number;
+      y: number;
+    }>
+  >;
+  setIsCursorActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const Cursor = ({
@@ -50,6 +61,8 @@ export const Cursor = ({
   maxXvalue,
   xScale,
   yScale,
+  setCurrentCursorValue,
+  setIsCursorActive,
 }: CursorProps): JSX.Element => {
   const parsedPath = parse(linePath);
 
@@ -57,18 +70,20 @@ export const Cursor = ({
   const translationX: Animated.SharedValue<number | null> = useSharedValue(0);
   const translationY: Animated.SharedValue<number | null> = useSharedValue(0);
 
-  interface IInvertValues {
-    xValue: number;
-    yValue: number;
-  }
-  const invertValues = ({ xValue, yValue }: IInvertValues) => {
-    console.log('X value:', xScale.invert(Number(xValue)).toFixed(2));
-    console.log('Y value:', yScale.invert(Number(yValue)).toFixed(2));
+  const invertCurrentCursorValue = ({
+    xValue,
+    yValue,
+  }: IInvertCurrentCursorValue) => {
+    // invert scaled numbers
+    const x = Number(xScale.invert(Number(xValue)).toFixed(2));
+    const y = Number(yScale.invert(Number(yValue)).toFixed(2));
+    setCurrentCursorValue({ x, y });
   };
 
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: () => {
       isActive.value = true;
+      runOnJS(setIsCursorActive)(true);
     },
     onActive: event => {
       // limit cursor for min i max X value
@@ -79,14 +94,14 @@ export const Cursor = ({
             : event.x
           : minXvalue;
       translationY.value = getYForX(parsedPath, translationX.value);
-    },
-    onEnd: () => {
-      isActive.value = false;
-      runOnJS(invertValues)({
+      runOnJS(invertCurrentCursorValue)({
         xValue: Number(translationX.value),
         yValue: Number(translationY.value),
       });
-      console.log('Dropped');
+    },
+    onEnd: () => {
+      isActive.value = false;
+      runOnJS(setIsCursorActive)(false);
     },
   });
 
