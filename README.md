@@ -1,4 +1,4 @@
-# Reanimated v2 (release candidate) example
+# Web summer camp: React Native Chart
 
 <p>
   <!-- iOS -->
@@ -7,16 +7,8 @@
   <img alt="Supports Expo Android" longdesc="Supports Expo Android" src="https://img.shields.io/badge/Android-4630EB.svg?style=flat-square&logo=ANDROID&labelColor=A4C639&logoColor=fff" />
   <!-- Web -->
 </p>
-
-Experiment with Reanimated 2 (rc) in SDK 40.
-
-## 🚀 How to use
-
-> `npx create-react-native-app my-app -t with-reanimated2`
+## 🚀 How to start
 
 - Run `yarn` or `npm install`
-- Run [`expo start`](https://docs.expo.dev/versions/latest/workflow/expo-cli/), try it out.
+- Run [`yarn start`](https://docs.expo.dev/versions/latest/workflow/expo-cli/), try it out.
 
-## 📝 Notes
-
-- [react-native-reanimated v2 docs](https://docs.swmansion.com/react-native-reanimated/)
