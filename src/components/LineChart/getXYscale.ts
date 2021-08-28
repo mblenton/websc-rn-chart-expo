@@ -6,8 +6,6 @@ export interface IValue {
 }
 
 interface IGetMaxMinValuesR {
-  maxYvalue: number;
-  minYvalue: number;
   minXvalue: number;
   maxXvalue: number;
 }
@@ -18,15 +16,12 @@ interface IGetMaxMinValues {
 
 const getMaxMinValues = ({ data }: IGetMaxMinValues): IGetMaxMinValuesR => {
   if (data?.length) {
-    const allYvalues = data.map(item => Number(item.y));
     const allXvalues = data.map(item => Number(item.x));
-    const maxYvalue = Math.max(...allYvalues);
-    const minYvalue = Math.min(...allYvalues);
     const maxXvalue = Math.max(...allXvalues);
     const minXvalue = Math.min(...allXvalues);
-    return { minYvalue, maxYvalue, minXvalue, maxXvalue };
+    return { minXvalue, maxXvalue };
   }
-  return { minYvalue: 0, maxYvalue: 0, minXvalue: 0, maxXvalue: 0 };
+  return { minXvalue: 0, maxXvalue: 0 };
 };
 
 interface IGetScaleFunction {
@@ -62,7 +57,7 @@ export const getXYscale = ({
   width,
   height,
 }: IgetXYscale): IgetXYscaleR => {
-  const { minYvalue, minXvalue, maxXvalue } = getMaxMinValues({
+  const { minXvalue, maxXvalue } = getMaxMinValues({
     data,
   });
 
@@ -72,8 +67,8 @@ export const getXYscale = ({
   });
 
   const yScale = getD3ScaleFunction({
-    domain: [minYvalue, 18], // 18 -> fixed max Y to avoid x scale dynamic ticks change
-    range: [height - 50, minYvalue],
+    domain: [0, 18], // 18 -> fixed max Y to avoid x scale dynamic ticks change
+    range: [height - 50, 0],
   });
 
   return {
