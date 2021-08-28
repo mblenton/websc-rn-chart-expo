@@ -9,7 +9,7 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import { getYForX, parse } from 'react-native-redash';
-import * as d3 from 'd3-scale';
+import * as d3Scale from 'd3-scale';
 
 const CURSOR = 50;
 const cursorOutherColor = 'rgba(0, 0, 0, 0.1)';
@@ -44,8 +44,8 @@ interface CursorProps {
   linePath: string;
   minXvalue: number;
   maxXvalue: number;
-  xScale: d3.ScaleLinear<number, number>;
-  yScale: d3.ScaleLinear<number, number>;
+  xScale: d3Scale.ScaleLinear<number, number>;
+  yScale: d3Scale.ScaleLinear<number, number>;
   setCurrentCursorValue: React.Dispatch<
     React.SetStateAction<{
       x: number;
@@ -66,34 +66,39 @@ export const Cursor = ({
 }: CursorProps): JSX.Element => {
   const parsedPath = parse(linePath);
 
+  // define variables for animation
   const isActive = useSharedValue(false);
-  const translationX: Animated.SharedValue<number | null> = useSharedValue(0);
-  const translationY: Animated.SharedValue<number | null> = useSharedValue(0);
+  const translationX = useSharedValue(0);
+  const translationY = useSharedValue(0);
 
+  // invert scaled numbers -> get actual values
   const invertCurrentCursorValue = ({
     xValue,
     yValue,
   }: IInvertCurrentCursorValue) => {
-    // invert scaled numbers
     const x = Number(xScale.invert(Number(xValue)).toFixed(2));
     const y = Number(yScale.invert(Number(yValue)).toFixed(2));
+    // set our states variables -> show current drag values in UI
     setCurrentCursorValue({ x, y });
   };
 
+  // get x and y values when dragging cursor along the curve (path)
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: () => {
       isActive.value = true;
       runOnJS(setIsCursorActive)(true);
     },
     onActive: event => {
-      // limit cursor for min i max X value
+      // limit cursor for min and max X value
       translationX.value =
         event.x > minXvalue
           ? event.x > maxXvalue
             ? maxXvalue
             : event.x
           : minXvalue;
-      translationY.value = getYForX(parsedPath, translationX.value);
+
+      translationY.value = Number(getYForX(parsedPath, translationX.value));
+
       runOnJS(invertCurrentCursorValue)({
         xValue: Number(translationX.value),
         yValue: Number(translationY.value),
@@ -105,7 +110,8 @@ export const Cursor = ({
     },
   });
 
-  const style = useAnimatedStyle(() => {
+  // cursor pointer animation -> movement and scale
+  const styleAnimatedCursor = useAnimatedStyle(() => {
     const translateX = Number(translationX.value) - CURSOR / 2 + 35;
     const translateY = Number(translationY.value) - CURSOR / 2 + 10;
     return {
@@ -121,7 +127,7 @@ export const Cursor = ({
     <View style={StyleSheet.absoluteFill}>
       <PanGestureHandler {...{ onGestureEvent }}>
         <Animated.View style={styles.panArea}>
-          <Animated.View style={[styles.cursor, style]}>
+          <Animated.View style={[styles.cursor, styleAnimatedCursor]}>
             <View style={styles.cursorBody} />
           </Animated.View>
         </Animated.View>
