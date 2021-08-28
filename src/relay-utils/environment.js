@@ -6,9 +6,10 @@ import {
   Store,
   Observable,
 } from 'relay-runtime';
-import { GRAPHQL_QUERY_URL, GRAPHQL_SUBSCRIPTION_URL } from '../config.json';
+import { MY_LOCAL_IP } from '../config.json';
 
 async function fetchQuery(operation, variables) {
+  const GRAPHQL_QUERY_URL = `http://${MY_LOCAL_IP}:4000/graphql`;
   return fetch(GRAPHQL_QUERY_URL, {
     body: JSON.stringify({
       query: operation.text,
@@ -23,6 +24,7 @@ async function fetchQuery(operation, variables) {
   });
 }
 
+const GRAPHQL_SUBSCRIPTION_URL = `ws://${MY_LOCAL_IP}:4000/graphql`;
 const subscriptionClient = new SubscriptionClient(GRAPHQL_SUBSCRIPTION_URL, {
   reconnect: true,
 });
