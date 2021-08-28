@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { graphql, useLazyLoadQuery, useSubscription } from 'react-relay';
-import { useRelayQuery } from './__generated__/useRelayQuery.graphql';
+import { useRelayQuery as IUseRelayQuery } from './__generated__/useRelayQuery.graphql';
 
 interface IUseRelayR {
   data: readonly {
@@ -28,9 +28,10 @@ export const useRelay = (): IUseRelayR => {
     }
   `;
 
-  const { chartData: data } = useLazyLoadQuery<useRelayQuery>(
+  const { chartData: data } = useLazyLoadQuery<IUseRelayQuery>(
     graphqlQuery,
     {}, // for variables - there are no variables in our example
+    { fetchPolicy: 'store-or-network' },
   );
 
   // IMPORTANT: your config should be memoized.
