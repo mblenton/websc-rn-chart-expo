@@ -8,8 +8,10 @@ import {
 } from 'relay-runtime';
 import { MY_LOCAL_IP } from '../config.json';
 
+const GRAPHQL_QUERY_URL = `http://${MY_LOCAL_IP}:4000/graphql`;
+const GRAPHQL_SUBSCRIPTION_URL = `ws://${MY_LOCAL_IP}:4000/graphql`;
+
 async function fetchQuery(operation, variables) {
-  const GRAPHQL_QUERY_URL = `http://${MY_LOCAL_IP}:4000/graphql`;
   return fetch(GRAPHQL_QUERY_URL, {
     body: JSON.stringify({
       query: operation.text,
@@ -24,7 +26,6 @@ async function fetchQuery(operation, variables) {
   });
 }
 
-const GRAPHQL_SUBSCRIPTION_URL = `ws://${MY_LOCAL_IP}:4000/graphql`;
 const subscriptionClient = new SubscriptionClient(GRAPHQL_SUBSCRIPTION_URL, {
   reconnect: true,
 });
