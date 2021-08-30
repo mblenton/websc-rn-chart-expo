@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import Svg, { G } from 'react-native-svg';
+import Svg, { G, Text } from 'react-native-svg';
 import { DrawXaxis } from './DrawXaxis';
 import { DrawYaxis } from './DrawYaxis';
 import { getXYscale } from './getXYscale';
@@ -36,9 +36,10 @@ export const LineChart = (): JSX.Element => {
     <View style={styles.mainContainer}>
       <View style={styles.chartContainer}>
         <Svg style={StyleSheet.absoluteFill}>
-          <G fill="none">
-            <DrawXaxis xScale={xScale} height={height} width={width} />
-            <DrawYaxis yScale={yScale} height={height} />
+          <G>
+            <Text fill="#000" fontSize="20" x="150" y="100">
+              Solve task 1
+            </Text>
           </G>
         </Svg>
       </View>
