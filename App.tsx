@@ -2,10 +2,13 @@ import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import React, { Suspense } from 'react';
 import { RelayEnvironmentProvider } from 'react-relay/hooks';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, LogBox } from 'react-native';
 import { ErrorBoundary } from './ErrorBoundary';
 import { LineChart } from './src/components/LineChart';
 import { environment } from './src/relay-utils/environment';
+
+// ignore warnings for relay-hooks lib for Android
+LogBox.ignoreLogs(['Warning: ...']);
 
 const backgroundColor = 'white';
 
