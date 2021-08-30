@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
 
 export const LineChart = (): JSX.Element => {
   const { xScale, yScale } = getXYscale({
-    data,
     width,
     height,
   });
@@ -50,7 +49,7 @@ export const LineChart = (): JSX.Element => {
     <View style={styles.mainContainer}>
       <View style={styles.chartContainer}>
         <Svg style={StyleSheet.absoluteFill}>
-          <G fill="none">
+          <G>
             <DrawXaxis xScale={xScale} height={height} width={width} />
             <DrawYaxis yScale={yScale} height={height} />
           </G>
