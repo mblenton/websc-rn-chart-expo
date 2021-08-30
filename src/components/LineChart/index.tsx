@@ -25,11 +25,16 @@ const styles = StyleSheet.create({
     height,
     // borderWidth: 1,
   },
+  cursorValuesContainer: {
+    height: 30,
+    width: 140,
+    alignItems: 'center',
+    // borderWidth: 1,
+  },
 });
 
 export const LineChart = (): JSX.Element => {
   const { xScale, yScale } = getXYscale({
-    data,
     width,
     height,
   });
