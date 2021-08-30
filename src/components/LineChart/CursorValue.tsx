@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
+import { ReText } from 'react-native-redash';
+import Animated from 'react-native-reanimated';
 
 interface ICursorValue {
-  x: number;
-  y: number;
-  isCursorActive: boolean;
+  x: Readonly<Animated.SharedValue<string>>;
+  y: Readonly<Animated.SharedValue<string>>;
+  isCursorActive?: boolean;
 }
 
 const styles = StyleSheet.create({
@@ -13,8 +15,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // borderWidth: 1,
   },
+  variableContainer: {
+    width: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // borderWidth: 1,
+  },
   valueContainer: {
-    width: 70,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
     // borderWidth: 1,
   },
   value: {
@@ -25,15 +35,22 @@ const styles = StyleSheet.create({
 export const CursorValue = ({
   x,
   y,
-  isCursorActive,
+  isCursorActive = true,
 }: ICursorValue): JSX.Element | null => {
   return isCursorActive ? (
     <View style={styles.valuesContainer}>
-      <View style={styles.valueContainer}>
-        <Text style={styles.value}>x: {x}</Text>
+      <View style={styles.variableContainer}>
+        <Text style={styles.value}>X:</Text>
       </View>
       <View style={styles.valueContainer}>
-        <Text style={styles.value}>y: {y}</Text>
+        <ReText text={x} />
+      </View>
+      <View style={styles.variableContainer} />
+      <View style={styles.variableContainer}>
+        <Text style={styles.value}>Y:</Text>
+      </View>
+      <View style={styles.valueContainer}>
+        <ReText text={y} />
       </View>
     </View>
   ) : null;
