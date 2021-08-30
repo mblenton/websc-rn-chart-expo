@@ -9,6 +9,8 @@
 </p>
 ## 🚀 How to start
 
+- connect computer and mobile phone to same local network
+- run [`websc-rn-chart-graphql-server`] (https://github.com/mblenton/websc-rn-chart-graphql-server)
+- in `/src/config.json` file change `MY_LOCAL_IP`
 - Run `yarn` or `npm install`
 - Run [`yarn start`](https://docs.expo.dev/versions/latest/workflow/expo-cli/), try it out.
-
