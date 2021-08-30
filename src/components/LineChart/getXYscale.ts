@@ -1,29 +1,8 @@
 import * as d3Scale from 'd3-scale';
-
 export interface IValue {
   readonly x: number | null;
   readonly y: number | null;
 }
-
-interface IGetMaxMinValuesR {
-  minXvalue: number;
-  maxXvalue: number;
-}
-
-interface IGetMaxMinValues {
-  readonly data: ReadonlyArray<IValue>;
-}
-
-const getMaxMinValues = ({ data }: IGetMaxMinValues): IGetMaxMinValuesR => {
-  if (data?.length) {
-    const allXvalues = data.map(item => Number(item.x));
-    const maxXvalue = Math.max(...allXvalues);
-    const minXvalue = Math.min(...allXvalues);
-    return { minXvalue, maxXvalue };
-  }
-  return { minXvalue: 0, maxXvalue: 0 };
-};
-
 interface IGetScaleFunction {
   domain: Array<number>;
   range: Array<number>;
@@ -40,7 +19,6 @@ const getD3ScaleFunction = ({
 };
 
 interface IgetXYscale {
-  readonly data: ReadonlyArray<IValue>;
   width: number;
   height: number;
 }
@@ -48,19 +26,9 @@ interface IgetXYscale {
 interface IgetXYscaleR {
   xScale: d3Scale.ScaleLinear<number, number>;
   yScale: d3Scale.ScaleLinear<number, number>;
-  minXvalue?: number;
-  maxXvalue?: number;
 }
 
-export const getXYscale = ({
-  data,
-  width,
-  height,
-}: IgetXYscale): IgetXYscaleR => {
-  const { minXvalue, maxXvalue } = getMaxMinValues({
-    data,
-  });
-
+export const getXYscale = ({ width, height }: IgetXYscale): IgetXYscaleR => {
   const xScale = getD3ScaleFunction({
     domain: [0, 30], // 30 -> fixed max X to avoid x scale dynamic ticks change
     range: [0, width - 80],
@@ -74,7 +42,5 @@ export const getXYscale = ({
   return {
     xScale,
     yScale,
-    minXvalue: xScale(minXvalue),
-    maxXvalue: xScale(maxXvalue),
   };
 };
