@@ -5,8 +5,6 @@ import { DrawXaxis } from './DrawXaxis';
 import { DrawYaxis } from './DrawYaxis';
 import { getXYscale } from './getXYscale';
 
-import data from './data.json';
-
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const width = screenWidth * 0.98 - 4;
 const height = screenHeight * (4 / 17);
@@ -27,7 +25,6 @@ const styles = StyleSheet.create({
 
 export const LineChart = (): JSX.Element => {
   const { xScale, yScale } = getXYscale({
-    data,
     width,
     height,
   });
@@ -36,7 +33,7 @@ export const LineChart = (): JSX.Element => {
     <View style={styles.mainContainer}>
       <View style={styles.chartContainer}>
         <Svg style={StyleSheet.absoluteFill}>
-          <G fill="none">
+          <G>
             <DrawXaxis xScale={xScale} height={height} width={width} />
             <DrawYaxis yScale={yScale} height={height} />
           </G>
