@@ -7,8 +7,8 @@ import { ErrorBoundary } from './ErrorBoundary';
 import { LineChart } from './src/components/LineChart';
 import { environment } from './src/relay-utils/environment';
 
-// ignore warnings for relay-hooks lib for Android
-LogBox.ignoreLogs(['Warning: ...']);
+// ignore warning for relay-hooks lib for Android
+LogBox.ignoreLogs(['Setting a timer']);
 
 const backgroundColor = 'white';
 
