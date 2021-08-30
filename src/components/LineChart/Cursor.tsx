@@ -4,17 +4,27 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedGestureHandler,
   useSharedValue,
+  useDerivedValue,
   useAnimatedStyle,
   withSpring,
-  runOnJS,
+  interpolate,
 } from 'react-native-reanimated';
 import { getYForX, parse } from 'react-native-redash';
+import { CursorValue } from './CursorValue';
+import { getMaxMinValues } from './getMaxMinValues';
+import { IValue } from './getXYscale';
 import * as d3Scale from 'd3-scale';
 
 const CURSOR = 50;
 const cursorOutherColor = 'rgba(0, 0, 0, 0.1)';
 const cursorInnerColor = 'black';
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    height: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   cursor: {
     width: CURSOR,
     height: CURSOR,
@@ -34,36 +44,36 @@ const styles = StyleSheet.create({
     height: '100%',
     // borderWidth: 1,
   },
+  cursorValuesContainer: {
+    height: 30,
+    width: 140,
+    alignItems: 'center',
+    position: 'absolute',
+    top: -30,
+    // borderWidth: 1,
+  },
 });
 
-interface IInvertCurrentCursorValue {
-  xValue: number;
-  yValue: number;
-}
 interface CursorProps {
   linePath: string;
-  minXvalue: number;
-  maxXvalue: number;
   xScale: d3Scale.ScaleLinear<number, number>;
   yScale: d3Scale.ScaleLinear<number, number>;
-  setCurrentCursorValue: React.Dispatch<
-    React.SetStateAction<{
-      x: number;
-      y: number;
-    }>
-  >;
-  setIsCursorActive: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly data: ReadonlyArray<IValue>;
 }
 
 export const Cursor = ({
   linePath,
-  minXvalue,
-  maxXvalue,
   xScale,
   yScale,
-  setCurrentCursorValue,
-  setIsCursorActive,
+  data,
 }: CursorProps): JSX.Element => {
+  const { minXvalue, maxXvalue, minYvalue, maxYvalue } = getMaxMinValues({
+    data,
+  });
+  const maxXvalueScaled = xScale(maxXvalue);
+  const maxYvalueScaled = yScale(maxXvalue);
+  const minYvalueScaled = yScale(minYvalue);
+
   const parsedPath = parse(linePath);
 
   // define variables for animation
@@ -71,42 +81,24 @@ export const Cursor = ({
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
 
-  // invert scaled numbers -> get actual values
-  const invertCurrentCursorValue = ({
-    xValue,
-    yValue,
-  }: IInvertCurrentCursorValue) => {
-    const x = Number(xScale.invert(Number(xValue)).toFixed(2));
-    const y = Number(yScale.invert(Number(yValue)).toFixed(2));
-    // set our states variables -> show current drag values in UI
-    setCurrentCursorValue({ x, y });
-  };
-
   // get x and y values when dragging cursor along the curve (path)
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: () => {
       isActive.value = true;
-      runOnJS(setIsCursorActive)(true);
     },
     onActive: event => {
       // limit cursor for min and max X value
       translationX.value =
         event.x > minXvalue
-          ? event.x > maxXvalue
-            ? maxXvalue
+          ? event.x > maxXvalueScaled
+            ? maxXvalueScaled
             : event.x
           : minXvalue;
 
       translationY.value = Number(getYForX(parsedPath, translationX.value));
-
-      runOnJS(invertCurrentCursorValue)({
-        xValue: Number(translationX.value),
-        yValue: Number(translationY.value),
-      });
     },
     onEnd: () => {
       isActive.value = false;
-      runOnJS(setIsCursorActive)(false);
     },
   });
 
@@ -123,8 +115,35 @@ export const Cursor = ({
     };
   });
 
+  // values animation
+  const styleAnimatedValues = useAnimatedStyle(() => {
+    return {
+      opacity: withSpring(isActive.value ? 1 : 0),
+    };
+  });
+
+  const x = useDerivedValue(() => {
+    return interpolate(
+      translationX.value,
+      [0, maxXvalueScaled],
+      [0, maxXvalue],
+    ).toFixed(2);
+  }, [translationX]);
+
+  const y = useDerivedValue(() => {
+    return interpolate(
+      translationY.value,
+      [minYvalueScaled, maxYvalueScaled],
+      [minYvalue, maxYvalue],
+    ).toFixed(2);
+  }, [translationY]);
+
   return (
-    <View style={StyleSheet.absoluteFill}>
+    <View style={styles.mainContainer}>
+      <Animated.View
+        style={[styles.cursorValuesContainer, styleAnimatedValues]}>
+        <CursorValue x={x} y={y} />
+      </Animated.View>
       <PanGestureHandler {...{ onGestureEvent }}>
         <Animated.View style={styles.panArea}>
           <Animated.View style={[styles.cursor, styleAnimatedCursor]}>
