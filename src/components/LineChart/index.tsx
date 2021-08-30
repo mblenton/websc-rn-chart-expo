@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import Svg, { G } from 'react-native-svg';
 import { DrawXaxis } from './DrawXaxis';
@@ -7,7 +7,6 @@ import { DrawLine } from './DrawLine';
 import { getXYscale } from './getXYscale';
 import { generateLinePath } from './generateLinePath';
 import { Cursor } from './Cursor';
-import { CursorValue } from './CursorValue';
 import { useRelay } from './useRelay';
 
 // import data from './data.json';
@@ -37,14 +36,9 @@ const styles = StyleSheet.create({
 });
 
 export const LineChart = (): JSX.Element => {
-  const [currentCursorValue, setCurrentCursorValue] = useState({ x: 0, y: 0 });
-
-  const [isCursorActive, setIsCursorActive] = useState(false);
-
   const { data } = useRelay();
 
-  const { xScale, yScale, minXvalue, maxXvalue } = getXYscale({
-    data,
+  const { xScale, yScale } = getXYscale({
     width,
     height,
   });
@@ -57,16 +51,9 @@ export const LineChart = (): JSX.Element => {
 
   return (
     <View style={styles.mainContainer}>
-      <View style={styles.cursorValuesContainer}>
-        <CursorValue
-          x={currentCursorValue.x}
-          y={currentCursorValue.y}
-          isCursorActive={isCursorActive}
-        />
-      </View>
       <View style={styles.chartContainer}>
         <Svg style={StyleSheet.absoluteFill}>
-          <G fill="none">
+          <G>
             <DrawXaxis xScale={xScale} height={height} width={width} />
             <DrawYaxis yScale={yScale} height={height} />
           </G>
@@ -77,13 +64,10 @@ export const LineChart = (): JSX.Element => {
           />
         </Svg>
         <Cursor
-          minXvalue={Number(minXvalue)}
-          maxXvalue={Number(maxXvalue)}
           linePath={linePath as string}
           xScale={xScale}
           yScale={yScale}
-          setCurrentCursorValue={setCurrentCursorValue}
-          setIsCursorActive={setIsCursorActive}
+          data={data}
         />
       </View>
     </View>
