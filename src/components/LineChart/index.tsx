@@ -25,12 +25,6 @@ const styles = StyleSheet.create({
     height,
     // borderWidth: 1,
   },
-  cursorValuesContainer: {
-    height: 30,
-    width: 140,
-    alignItems: 'center',
-    // borderWidth: 1,
-  },
 });
 
 export const LineChart = (): JSX.Element => {
@@ -50,15 +44,11 @@ export const LineChart = (): JSX.Element => {
     <View style={styles.mainContainer}>
       <View style={styles.chartContainer}>
         <Svg style={StyleSheet.absoluteFill}>
-          <G fill="none">
+          <G>
             <DrawXaxis xScale={xScale} height={height} width={width} />
             <DrawYaxis yScale={yScale} height={height} />
           </G>
-          <DrawLine
-            linePath={linePath as string}
-            height={height}
-            width={width}
-          />
+          <DrawLine linePath={linePath as string} />
         </Svg>
       </View>
     </View>
