@@ -71,6 +71,7 @@ export const Cursor = ({
     data,
   });
   const maxXvalueScaled = xScale(maxXvalue);
+  const minXvalueScaled = xScale(minXvalue);
   const maxYvalueScaled = yScale(maxXvalue);
   const minYvalueScaled = yScale(minYvalue);
 
@@ -89,11 +90,11 @@ export const Cursor = ({
     onActive: event => {
       // limit cursor for min and max X value
       translationX.value =
-        event.x > minXvalue
+        event.x > minXvalueScaled
           ? event.x > maxXvalueScaled
             ? maxXvalueScaled
             : event.x
-          : minXvalue;
+          : minXvalueScaled;
 
       translationY.value = Number(getYForX(parsedPath, translationX.value));
     },
