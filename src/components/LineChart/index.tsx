@@ -45,6 +45,9 @@ export const LineChart = (): JSX.Element => {
     data,
   });
 
+  console.log('linePath');
+  console.log(linePath);
+
   return (
     <View style={styles.mainContainer}>
       <View style={styles.chartContainer}>
