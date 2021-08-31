@@ -77,12 +77,32 @@ export const Cursor = ({
 
   const parsedPath = parse(linePath);
 
-  // define variables for animation
+  // parsedPath = {
+  // "close": false,
+  // "curves": [
+  //   {
+  //     "c1": {
+  //       "x": 16.566666666666666,
+  //       "y": 123.8235294117647,
+  //     },
+  //     "c2": {
+  //       "x": 23.19333333333333,
+  //       "y": 132.078431372549,
+  //     },
+  //     "to": {
+  //       "x": 29.82,
+  //       "y": 132.078431372549,
+  //     },
+  //   },
+  // ...
+
+  // define shared variables for animation
   const isActive = useSharedValue(false);
   const translationX = useSharedValue(0);
   const translationY = useSharedValue(0);
 
   // get x and y values when dragging cursor along the curve (path)
+  // and provide props for PanGestureHandler
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: () => {
       isActive.value = true;
@@ -104,6 +124,12 @@ export const Cursor = ({
   });
 
   // cursor pointer animation -> movement and scale
+  // returns
+  //{
+  //  translateY: number;
+  //  translateX: number;
+  //  scale: number;
+  //}
   const styleAnimatedCursor = useAnimatedStyle(() => {
     const translateX = Number(translationX.value) - CURSOR / 2 + 35;
     const translateY = Number(translationY.value) - CURSOR / 2 + 10;
@@ -116,18 +142,23 @@ export const Cursor = ({
     };
   });
 
-  // values animation
+  // show or hide values
+  // returns
+  // {
+  //  opacity: number;
+  // }
   const styleAnimatedValues = useAnimatedStyle(() => {
     return {
       opacity: withSpring(isActive.value ? 1 : 0),
     };
   });
 
+  // map sharedValue translationX to actual values range
   const x = useDerivedValue(() => {
     return interpolate(
-      translationX.value,
-      [0, maxXvalueScaled],
-      [0, maxXvalue],
+      translationX.value, // node
+      [0, maxXvalueScaled], // inputRange
+      [0, maxXvalue], // output range
     ).toFixed(2);
   }, [translationX]);
 
