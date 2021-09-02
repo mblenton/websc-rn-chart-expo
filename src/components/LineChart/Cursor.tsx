@@ -72,7 +72,7 @@ export const Cursor = ({
   });
   const maxXvalueScaled = xScale(maxXvalue);
   const minXvalueScaled = xScale(minXvalue);
-  const maxYvalueScaled = yScale(maxXvalue);
+  const maxYvalueScaled = yScale(maxYvalue);
   const minYvalueScaled = yScale(minYvalue);
 
   const parsedPath = parse(linePath);
